@@ -25,6 +25,7 @@ let minAirResistance = document.getElementById("minAir");
 let maxAirResistance = document.getElementById("maxAir"); 
 let xPos = document.getElementById("xPos");
 let yPos = document.getElementById("yPos");
+let numBallS = document.getElementById("numBalls");
 
 let xPosVal = document.getElementById("xPosition");
 let yPosVal = document.getElementById("yPosition");
@@ -36,6 +37,7 @@ let minGravVal = document.getElementById("minGravVal");
 let maxGravVal = document.getElementById("maxGravVal");
 let minAirVal = document.getElementById("minAirVal");
 let maxAirVal = document.getElementById("maxAirVal");
+let numBallsVal = document.getElementById("numBallsVal");
 
 minVelocity.addEventListener("input", checkValues);
 maxVelocity.addEventListener("input", checkValues);
@@ -43,10 +45,11 @@ minLaunchAngle.addEventListener("input", checkValues);
 maxLaunchAngle.addEventListener("input", checkValues);
 minGravity.addEventListener("input", checkValues);
 maxGravity.addEventListener("input", checkValues);
-minAirResistance.addEventListener("input", checkValues); 
+minAirResistance.addEventListener("input", checkValues);
 maxAirResistance.addEventListener("input", checkValues);
 xPos.addEventListener("input", updateVals);
 yPos.addEventListener("input", updateVals);
+numBallS.addEventListener("input", checkValues);
 
 xPosVal.addEventListener("input", checkRange);
 yPosVal.addEventListener("input", checkRange);
@@ -58,6 +61,7 @@ minGravVal.addEventListener("input", checkRange);
 maxGravVal.addEventListener("input", checkRange);
 minAirVal.addEventListener("input", checkRange);
 maxAirVal.addEventListener("input", checkRange);
+numBallsVal.addEventListener("input", checkRange);
 
 let animationID;
 let simulator = {
@@ -70,7 +74,8 @@ let simulator = {
     minAirResistance: 0,  
     maxAirResistance: 0.01,
     xPos: 300,
-    yPos: 400
+    yPos: 400,
+	numBalls: 5
 };
 
 let color = ["red", "blue", "green", "orange", "purple", "cyan", "magenta", "yellow", "lime", "pink", "teal", "lavender", "brown", "beige", "maroon", "navy", "olive", "coral", "turquoise", "silver",
@@ -89,14 +94,19 @@ function checkRange(){
 	maxGravity.value = parseFloat(maxGravVal.value);
 	minAirResistance.value = parseFloat(minAirVal.value);
 	maxAirResistance.value = parseFloat(maxAirVal.value);
+	numBallS.value = parseFloat(numBallsVal.value);
 	checkValues();
 }
 
+function adaptiveSlider(){
+	
+}
 function updateVals() {
     xPosVal.value = xPos.value;
     yPosVal.value = yPos.value;
     initalSetup();
 }
+
 function checkValues() {
     let minVelo = parseFloat(minVelocity.value);
     let maxVelo = parseFloat(maxVelocity.value);
@@ -136,6 +146,7 @@ function changeValues() {
     maxGravVal.value = maxGravity.value;
     minAirVal.value = minAirResistance.value;
     maxAirVal.value = maxAirResistance.value;
+	numBallsVal.value = numBallS.value;
 }
 
 function showError(){
@@ -160,11 +171,12 @@ function updateParameters() {
     simulator.maxGravity = parseFloat(maxGravity.value);
     simulator.minAirResistance = parseFloat(minAirResistance.value);
     simulator.maxAirResistance = parseFloat(maxAirResistance.value);
+	simulator.numBalls = parseFloat(numBallS.value);
     updateArray();
 }
 
 function updateArray() {
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < simulator.numBalls; i++) {
         velocity[i] = Math.random() * (simulator.maxVelocity - simulator.minVelocity) + simulator.minVelocity;
         launchAngle[i] = Math.random() * (simulator.maxLaunchAngle - simulator.minLaunchAngle) + simulator.minLaunchAngle;
         gravity[i] = Math.random() * (simulator.maxGravity - simulator.minGravity) + simulator.minGravity;
@@ -175,7 +187,7 @@ function updateArray() {
 }
 
 function initalSetup() {
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < simulator.numBalls; i++) {
         x[i] = simulator.xPos = parseFloat(xPos.value);
         y[i] = simulator.yPos = parseFloat(yPos.value);
         vx[i] = -velocity[i] * Math.cos(launchAngle[i] * Math.PI / 180);
@@ -190,7 +202,7 @@ function simulate() {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < simulator.numBalls; i++) {
         vx[i] *= (1 - airResistance[i]);
         vy[i] *= (1 - airResistance[i]); 
         
