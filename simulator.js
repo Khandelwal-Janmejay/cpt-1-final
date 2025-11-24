@@ -1,7 +1,7 @@
 /* ------------- To-DO's! ----------
-	fix text box input range bypass 
-	make css better, style it good
-	ball color changing every few seconds
+	No hardcoding anything, user should be able to control EVERYTHING!
+	Including 
+		- color, ball size, randomize, canvas, slider
 */
 
 let velocity = [];
@@ -39,6 +39,8 @@ let minAirVal = document.getElementById("minAirVal");
 let maxAirVal = document.getElementById("maxAirVal");
 let numBallsVal = document.getElementById("numBallsVal");
 
+let canvas = document.getElementById("simulationCanvas");
+
 minVelocity.addEventListener("input", checkValues);
 maxVelocity.addEventListener("input", checkValues);
 minLaunchAngle.addEventListener("input", checkValues);
@@ -47,8 +49,8 @@ minGravity.addEventListener("input", checkValues);
 maxGravity.addEventListener("input", checkValues);
 minAirResistance.addEventListener("input", checkValues);
 maxAirResistance.addEventListener("input", checkValues);
-xPos.addEventListener("input", updateVals);
-yPos.addEventListener("input", updateVals);
+xPos.addEventListener("input", checkValues);
+yPos.addEventListener("input", checkValues);
 numBallS.addEventListener("input", checkValues);
 
 xPosVal.addEventListener("input", checkRange);
@@ -83,6 +85,23 @@ let color = ["red", "blue", "green", "orange", "purple", "cyan", "magenta", "yel
     "amber", "cerulean", "fuchsia", "jade", "saffron", "sepia", "tan", "umber", "vermilion", "wisteria",
     "zucchini", "cobalt", "denim", "ecru", "flax", "garnet", "harlequin", "isabelline", "jasmine", "lilac"];
 
+function randomize(){
+	// not completed
+	let xPosition = Math.floor(Math.random() * (canvas.width + 1));
+	let yPosition = Math.floor(Math.random() * (canvas.height + 1));
+	let minVel = Math.floor(Math.random() * (minVelocity.max - minVelocity.min + 1)) + minVelocity.min;
+	let maxVel = Math.floor(Math.random() * (minVelocity.max - minVel + 1)) + minVel;
+	let minLaunch = Math.floor(Math.random() * (minLaunchAngle.max - minLaunchAngle.min + 1)) + minLaunchAngle.min;
+	//let maxLaunch = Math.floor(Math.random() * (minLaunchAngle.max - minLaunch + 1)) + minLaunch;
+	
+	xPos.value = xPosition;
+	yPos.value = yPosition;
+	minVelocity.value = minVel;
+	maxVelocity.value = maxVel;
+	minLaunchAngle.value = minLaunch;
+	maxLaunchAngle.value = maxLaunch;
+	checkValues();
+}
 function checkRange(){
 	xPos.value = parseFloat(xPosVal.value);
 	yPos.value = parseFloat(yPosVal.value);
@@ -98,13 +117,9 @@ function checkRange(){
 	checkValues();
 }
 
-function adaptiveSlider(){
-	
-}
 function updateVals() {
     xPosVal.value = xPos.value;
     yPosVal.value = yPos.value;
-    initalSetup();
 }
 
 function checkValues() {
@@ -116,6 +131,7 @@ function checkValues() {
     let maxGrav = parseFloat(maxGravity.value);
     let minAir = parseFloat(minAirResistance.value);
     let maxAir = parseFloat(maxAirResistance.value);
+	updateVals();
     changeValues();
     if (minVelo > maxVelo){
         showError();
@@ -196,7 +212,6 @@ function initalSetup() {
 }
 
 function simulate() {
-    let canvas = document.getElementById("simulationCanvas");
     let ctx = canvas.getContext("2d");
     
     ctx.fillStyle = "black";

@@ -18,7 +18,6 @@
                 <label for="xPos">X Position:</label>
                 <input type = "range" id = "xPos" value = "300" placeholder="xPosition" min = "0" max = "600">
                 <input type = "number" id = "xPosition" value = "300" placeholder="min launch">
-
             </div>
             <div>
                 <label for="yPos">Y Position:</label>
@@ -69,8 +68,11 @@
                 <label for="numBalls">Number of Balls:</label>
                 <input type="range" id="numBalls" value="50" min="1" max="100">
                 <input type="text" id="numBallsVal" value="50">
-             </div>
-
+            </div>
+			<div>
+				<label for="randomize">Randomize everything!</label>
+				<input type="button" id="random" value="Make Everything random!" onclick="randomize()"> 
+			</div>
         </div>
     </body>
 </html>
