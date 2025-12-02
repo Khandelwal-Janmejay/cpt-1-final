@@ -16,7 +16,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Prevent body scroll, scroll panels instead */
+    overflow: hidden;
 }
 
 #header {
@@ -29,7 +29,6 @@ body {
     flex-shrink: 0;
 }
 
-/* Main Layout */
 .main-container {
     display: flex;
     flex: 1;
@@ -39,7 +38,6 @@ body {
     overflow: hidden;
 }
 
-/* Canvas Section */
 .simulation-area {
     flex: 2;
     display: flex;
@@ -58,7 +56,6 @@ canvas {
     max-height: 100%;
 }
 
-/* Controls Section */
 .controls-area {
     flex: 1;
     background: var(--panel-bg);
@@ -75,7 +72,6 @@ canvas {
     gap: 10px;
 }
 
-/* Control Groups (Cards) */
 .control-group {
     background: rgba(255, 255, 255, 0.03);
     padding: 10px;
@@ -91,7 +87,6 @@ canvas {
     display: block;
 }
 
-/* Inputs Row */
 .input-row {
     display: flex;
     align-items: center;
@@ -104,7 +99,6 @@ canvas {
     flex: 1;
 }
 
-/* Styling Inputs */
 input[type="range"] {
     flex: 2;
     margin: 0 10px;
@@ -122,7 +116,6 @@ input[type="number"] {
     text-align: center;
 }
 
-/* Randomize Button */
 #random {
     width: 100%;
     padding: 12px;
