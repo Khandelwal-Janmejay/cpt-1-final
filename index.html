@@ -1,78 +1,115 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Physics Simulator</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="styles.css">
-        <script src="simulator.js" defer></script>
-    </head>
-    <body>
-        <h1 id = "header">
-            Welcome to the Physics Simulator
-        </h1>
-        <canvas id="simulationCanvas" width="600" height="400"></canvas>
+<head>
+    <title>Physics Simulator</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <script src="simulator.js" defer></script>
+</head>
+<body>
+
+    <h1 id="header">Physics Simulator</h1>
+
+    <div class="main-container">
         
-        <div>
-            <div>
-                <label for="xPos">X Position:</label>
-                <input type = "range" id = "xPos" value = "300" placeholder="xPosition" min = "0" max = "600">
-                <input type = "number" id = "xPosition" value = "300" placeholder="min launch">
-            </div>
-            <div>
-                <label for="yPos">Y Position:</label>
-                <input type = "range" id = "yPos" value = "300" placeholder="yPosition" min = "0" max = "400">
-                <input type = "number" id = "yPosition" value = "300" placeholder="min launch">
-            </div>
-            <div>
-                <label for="minVelo">Minimum Velocity:</label>
-                <input type = "range" id = "minVelo" value = "5" placeholder="Min Velocity (m/s)" min = "-100" max = "100">
-                <input type = "number" id = "minVelVal" value = "30" placeholder="min launch">
-            </div>
-            <div>
-                <label for="maxVelo">Maximum Velocity:</label>
-                <input type = "range" id = "maxVelo" value = "10" placeholder="Max Velocity (m/s)" min = "-100" max = "100">
-                <input type = "number" id = "maxVelVal" value = "30" placeholder="min launch">
-            </div>
-            <div>
-                <label for="minLaunch">Minimum Launch Angle:</label>
-                <input type = "range" id = "minLaunch" value = "30" placeholder="min launch" min = "0" max = "360">
-                <input type = "number" id = "minLaunchVal" value = "30" placeholder="min launch">
-            </div>
-            <div>
-                <label for="maxLaunch">Maximum Launch Angle:</label>
-                <input type = "range" id = "maxLaunch" value = "60" placeholder="max launch" min = "0" max = "360">
-                <input type = "number" id = "maxLaunchVal" value = "30" placeholder="min launch">
-            </div>
-            <div>
-                <label for ="minGrav">Minimum Gravity:</label>
-                <input type = "range" id = "minGrav" value = "-4" placeholder="Min Gravity" min = "-9.8" max = "9.8" step="0.1">
-                <input type = "number" id = "minGravVal" value = "30" placeholder="min launch">
-            </div>
-            <div>
-                <label for ="maxGrav">Maximum Gravity:</label>
-                <input type = "range" id = "maxGrav" value = "9.8" placeholder="Max Gravity" min = "-9.8" max = "9.8" step="0.1">
-                <input type = "number" id = "maxGravVal" value = "30" placeholder="min launch">
-            </div>
-            <div>
-                <label for ="minAir">Minimum Air Resistance:</label>
-                <input type = "range" id = "minAir" value = "0" placeholder="Min Air Resistance" min = "0" max = "0.1" step="0.001">
-                <input type = "number" id = "minAirVal" value = "30" placeholder="min launch">
-            </div>
-            <div>
-                <label for ="maxAir">Maximum Air Resistance:</label>
-                <input type = "range" id = "maxAir" value = "0.01" placeholder="Max Air Resistance" min = "0" max = "0.1" step="0.001">
-                <input type = "number" id = "maxAirVal" value = "30" placeholder="min launch">
-            </div>
-			<div>
-                <label for="numBalls">Number of Balls:</label>
-                <input type="range" id="numBalls" value="50" min="1" max="100">
-                <input type="text" id="numBallsVal" value="50">
-            </div>
-			<div>
-				<label for="randomize">Randomize everything!</label>
-				<input type="button" id="random" value="Make Everything random!" onclick="randomize()"> 
-			</div>
+        <!-- Left Side: Simulation -->
+        <div class="simulation-area">
+            <canvas id="simulationCanvas" width="600" height="400"></canvas>
         </div>
-    </body>
+
+        <!-- Right Side: Controls -->
+        <div class="controls-area">
+            <div class="controls-grid">
+                
+                <!-- Position Group -->
+                <div class="control-group">
+                    <span class="group-title">Spawn Position</span>
+                    <div class="input-row">
+                        <label for="xPos">X Pos</label>
+                        <input type="range" id="xPos" value="300" min="0" max="600">
+                        <input type="number" id="xPosition" value="300">
+                    </div>
+                    <div class="input-row">
+                        <label for="yPos">Y Pos</label>
+                        <input type="range" id="yPos" value="300" min="0" max="400">
+                        <input type="number" id="yPosition" value="300">
+                    </div>
+                </div>
+
+                <!-- Velocity Group -->
+                <div class="control-group">
+                    <span class="group-title">Velocity (m/s)</span>
+                    <div class="input-row">
+                        <label for="minVelo">Min</label>
+                        <input type="range" id="minVelo" value="5" min="-100" max="100">
+                        <input type="number" id="minVelVal" value="5">
+                    </div>
+                    <div class="input-row">
+                        <label for="maxVelo">Max</label>
+                        <input type="range" id="maxVelo" value="10" min="-100" max="100">
+                        <input type="number" id="maxVelVal" value="10">
+                    </div>
+                </div>
+
+                <!-- Launch Angle Group -->
+                <div class="control-group">
+                    <span class="group-title">Launch Angle (Deg)</span>
+                    <div class="input-row">
+                        <label for="minLaunch">Min</label>
+                        <input type="range" id="minLaunch" value="30" min="0" max="360">
+                        <input type="number" id="minLaunchVal" value="30">
+                    </div>
+                    <div class="input-row">
+                        <label for="maxLaunch">Max</label>
+                        <input type="range" id="maxLaunch" value="60" min="0" max="360">
+                        <input type="number" id="maxLaunchVal" value="60">
+                    </div>
+                </div>
+
+                <!-- Gravity & Air Group -->
+                <div class="control-group">
+                    <span class="group-title">Environment</span>
+                    <div class="input-row">
+                        <label for="minGrav">Min Gravity</label>
+                        <input type="range" id="minGrav" value="-4" min="-9.8" max="9.8" step="0.1">
+                        <input type="number" id="minGravVal" value="-4">
+                    </div>
+                    <div class="input-row">
+                        <label for="maxGrav">Max Gravity</label>
+                        <input type="range" id="maxGrav" value="9.8" min="-9.8" max="9.8" step="0.1">
+                        <input type="number" id="maxGravVal" value="9.8">
+                    </div>
+                    <div class="input-row">
+                        <label for="minAir">Min Drag</label>
+                        <input type="range" id="minAir" value="0" min="0" max="0.1" step="0.001">
+                        <input type="number" id="minAirVal" value="0">
+                    </div>
+                    <div class="input-row">
+                        <label for="maxAir">Max Drag</label>
+                        <input type="range" id="maxAir" value="0.01" min="0" max="0.1" step="0.001">
+                        <input type="number" id="maxAirVal" value="0.01">
+                    </div>
+                </div>
+
+                <!-- Object Settings -->
+                <div class="control-group">
+                    <span class="group-title">Objects</span>
+                    <div class="input-row">
+                        <label for="numBalls">Count</label>
+                        <input type="range" id="numBalls" value="50" min="1" max="100">
+                        <input type="number" id="numBallsVal" value="50">
+                    </div>
+                    <div class="input-row">
+                        <label for="ballSize">Size</label>
+                        <input type="range" id="ballSize" value="5" min="1" max="20">
+                        <input type="number" id="ballSizeVal" value="5">
+                    </div>
+                </div>
+
+                <input type="button" id="random" value="Randomize All Parameters" onclick="randomize()"> 
+            </div>
+        </div>
+    </div>
+</body>
 </html>

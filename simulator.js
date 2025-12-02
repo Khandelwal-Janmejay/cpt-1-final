@@ -1,8 +1,4 @@
-/* ------------- To-DO's! ----------
-	No hardcoding anything, user should be able to control EVERYTHING!
-	Including 
-		- color, ball size, randomize, canvas, slider
-*/
+/* ------------- Physics Simulator Logic ---------- */
 
 let velocity = [];
 let launchAngle = [];
@@ -15,6 +11,7 @@ let y = [];
 let vx = [];
 let vy = [];
 
+// --- DOM Elements ---
 let minVelocity = document.getElementById("minVelo");
 let maxVelocity = document.getElementById("maxVelo");
 let minLaunchAngle = document.getElementById("minLaunch");
@@ -26,7 +23,9 @@ let maxAirResistance = document.getElementById("maxAir");
 let xPos = document.getElementById("xPos");
 let yPos = document.getElementById("yPos");
 let numBallS = document.getElementById("numBalls");
+let ballSize = document.getElementById("ballSize");
 
+// --- Value Displays (Number Inputs) ---
 let xPosVal = document.getElementById("xPosition");
 let yPosVal = document.getElementById("yPosition");
 let minVelVal = document.getElementById("minVelVal");
@@ -38,9 +37,11 @@ let maxGravVal = document.getElementById("maxGravVal");
 let minAirVal = document.getElementById("minAirVal");
 let maxAirVal = document.getElementById("maxAirVal");
 let numBallsVal = document.getElementById("numBallsVal");
+let ballSizeVal = document.getElementById("ballSizeVal");
 
 let canvas = document.getElementById("simulationCanvas");
 
+// --- Event Listeners for Sliders ---
 minVelocity.addEventListener("input", checkValues);
 maxVelocity.addEventListener("input", checkValues);
 minLaunchAngle.addEventListener("input", checkValues);
@@ -52,7 +53,9 @@ maxAirResistance.addEventListener("input", checkValues);
 xPos.addEventListener("input", checkValues);
 yPos.addEventListener("input", checkValues);
 numBallS.addEventListener("input", checkValues);
+ballSize.addEventListener("input", checkValues);
 
+// --- Event Listeners for Number Inputs ---
 xPosVal.addEventListener("input", checkRange);
 yPosVal.addEventListener("input", checkRange);
 minVelVal.addEventListener("input", checkRange);
@@ -64,6 +67,7 @@ maxGravVal.addEventListener("input", checkRange);
 minAirVal.addEventListener("input", checkRange);
 maxAirVal.addEventListener("input", checkRange);
 numBallsVal.addEventListener("input", checkRange);
+ballSizeVal.addEventListener("input", checkRange);
 
 let animationID;
 let simulator = {
@@ -77,7 +81,8 @@ let simulator = {
     maxAirResistance: 0.01,
     xPos: 300,
     yPos: 400,
-	numBalls: 5
+    numBalls: 50,
+    ballSize: 5
 };
 
 let color = ["red", "blue", "green", "orange", "purple", "cyan", "magenta", "yellow", "lime", "pink", "teal", "lavender", "brown", "beige", "maroon", "navy", "olive", "coral", "turquoise", "silver",
@@ -86,42 +91,72 @@ let color = ["red", "blue", "green", "orange", "purple", "cyan", "magenta", "yel
     "zucchini", "cobalt", "denim", "ecru", "flax", "garnet", "harlequin", "isabelline", "jasmine", "lilac"];
 
 function randomize(){
-	// not completed
-	let xPosition = Math.floor(Math.random() * (canvas.width + 1));
-	let yPosition = Math.floor(Math.random() * (canvas.height + 1));
-	let minVel = Math.floor(Math.random() * (minVelocity.max - minVelocity.min + 1)) + minVelocity.min;
-	let maxVel = Math.floor(Math.random() * (minVelocity.max - minVel + 1)) + minVel;
-	let minLaunch = Math.floor(Math.random() * (minLaunchAngle.max - minLaunchAngle.min + 1)) + minLaunchAngle.min;
-	//let maxLaunch = Math.floor(Math.random() * (minLaunchAngle.max - minLaunch + 1)) + minLaunch;
-	
-	xPos.value = xPosition;
-	yPos.value = yPosition;
-	minVelocity.value = minVel;
-	maxVelocity.value = maxVel;
-	minLaunchAngle.value = minLaunch;
-	maxLaunchAngle.value = maxLaunch;
-	checkValues();
+    let xPosition = Math.floor(Math.random() * (canvas.width + 1));
+    let yPosition = Math.floor(Math.random() * (canvas.height + 1));
+    
+    // Safe randomization: Generate two numbers and sort them so Min is always <= Max
+    let v1 = Math.floor(Math.random() * 100); 
+    let v2 = Math.floor(Math.random() * 100);
+    let minVel = Math.min(v1, v2);
+    let maxVel = Math.max(v1, v2);
+
+    let l1 = Math.floor(Math.random() * 360);
+    let l2 = Math.floor(Math.random() * 360);
+    let minLaunch = Math.min(l1, l2);
+    let maxLaunch = Math.max(l1, l2);
+    
+    let g1 = (Math.random() * 19.6) - 9.8;
+    let g2 = (Math.random() * 19.6) - 9.8;
+    let minGrav = Math.min(g1, g2);
+    let maxGrav = Math.max(g1, g2);
+
+    let a1 = Math.random() * 0.1;
+    let a2 = Math.random() * 0.1;
+    let minAir = Math.min(a1, a2);
+    let maxAir = Math.max(a1, a2);
+
+    let numBalls = Math.floor(Math.random() * 100) + 1;
+    let ballSizeRandom = Math.floor(Math.random() * 20) + 1;
+
+    // Apply to inputs
+    ballSize.value = ballSizeRandom;
+    xPos.value = xPosition;
+    yPos.value = yPosition;
+    minVelocity.value = minVel;
+    maxVelocity.value = maxVel;
+    minLaunchAngle.value = minLaunch;
+    maxLaunchAngle.value = maxLaunch;
+    minGravity.value = minGrav.toFixed(1);
+    maxGravity.value = maxGrav.toFixed(1);
+    minAirResistance.value = minAir.toFixed(3);
+    maxAirResistance.value = maxAir.toFixed(3);
+    numBallS.value = numBalls;
+    
+    // Update UI and restart
+    changeValues(); 
+    updateParameters();
+    cancelAnimationFrame(animationID);
+    simulate();
 }
+
+// Update Slider values from Text Inputs
 function checkRange(){
-	xPos.value = parseFloat(xPosVal.value);
-	yPos.value = parseFloat(yPosVal.value);
-	minVelocity.value = parseFloat(minVelVal.value);
-	maxVelocity.value = parseFloat(maxVelVal.value);
-	minLaunchAngle.value = parseFloat(minLaunchVal.value);
-	maxLaunchAngle.value = parseFloat(maxLaunchVal.value);
-	minGravity.value = parseFloat(minGravVal.value);
-	maxGravity.value = parseFloat(maxGravVal.value);
-	minAirResistance.value = parseFloat(minAirVal.value);
-	maxAirResistance.value = parseFloat(maxAirVal.value);
-	numBallS.value = parseFloat(numBallsVal.value);
-	checkValues();
+    xPos.value = parseFloat(xPosVal.value);
+    yPos.value = parseFloat(yPosVal.value);
+    minVelocity.value = parseFloat(minVelVal.value);
+    maxVelocity.value = parseFloat(maxVelVal.value);
+    minLaunchAngle.value = parseFloat(minLaunchVal.value);
+    maxLaunchAngle.value = parseFloat(maxLaunchVal.value);
+    minGravity.value = parseFloat(minGravVal.value);
+    maxGravity.value = parseFloat(maxGravVal.value);
+    minAirResistance.value = parseFloat(minAirVal.value);
+    maxAirResistance.value = parseFloat(maxAirVal.value);
+    numBallS.value = parseFloat(numBallsVal.value);
+    ballSize.value = parseFloat(ballSizeVal.value);
+    checkValues();
 }
 
-function updateVals() {
-    xPosVal.value = xPos.value;
-    yPosVal.value = yPos.value;
-}
-
+// Main validation logic
 function checkValues() {
     let minVelo = parseFloat(minVelocity.value);
     let maxVelo = parseFloat(maxVelocity.value);
@@ -131,8 +166,9 @@ function checkValues() {
     let maxGrav = parseFloat(maxGravity.value);
     let minAir = parseFloat(minAirResistance.value);
     let maxAir = parseFloat(maxAirResistance.value);
-	updateVals();
-    changeValues();
+    
+    changeValues(); // Sync text inputs to sliders
+
     if (minVelo > maxVelo){
         showError();
     }
@@ -146,14 +182,16 @@ function checkValues() {
         showError();
     }
     else{
-        changeValues();
         updateParameters();
         cancelAnimationFrame(animationID);
         simulate();
     }
 }
 
+// Update Text Inputs from Sliders
 function changeValues() {
+    xPosVal.value = xPos.value;
+    yPosVal.value = yPos.value;
     minVelVal.value = minVelocity.value;
     maxVelVal.value = maxVelocity.value;
     minLaunchVal.value = minLaunchAngle.value;
@@ -162,20 +200,21 @@ function changeValues() {
     maxGravVal.value = maxGravity.value;
     minAirVal.value = minAirResistance.value;
     maxAirVal.value = maxAirResistance.value;
-	numBallsVal.value = numBallS.value;
+    numBallsVal.value = numBallS.value;
+    ballSizeVal.value = ballSize.value;
 }
 
 function showError(){
     cancelAnimationFrame(animationID);
-    let canvas = document.getElementById("simulationCanvas");
     let ctx = canvas.getContext("2d");
     
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.font = '30px Arial';
-    ctx.fillStyle = 'white'; 
-    ctx.fillText('Invalid Range!', 150, 200);
+    ctx.font = '20px Arial';
+    ctx.fillStyle = 'red'; 
+    ctx.textAlign = 'center';
+    ctx.fillText('Invalid Range: Min cannot be greater than Max!', canvas.width/2, canvas.height/2);
 }
 
 function updateParameters() {
@@ -187,7 +226,8 @@ function updateParameters() {
     simulator.maxGravity = parseFloat(maxGravity.value);
     simulator.minAirResistance = parseFloat(minAirResistance.value);
     simulator.maxAirResistance = parseFloat(maxAirResistance.value);
-	simulator.numBalls = parseFloat(numBallS.value);
+    simulator.numBalls = parseFloat(numBallS.value);
+    simulator.ballSize = parseFloat(ballSize.value);
     updateArray();
 }
 
@@ -214,10 +254,12 @@ function initalSetup() {
 function simulate() {
     let ctx = canvas.getContext("2d");
     
+    // Clear Canvas
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     for (let i = 0; i < simulator.numBalls; i++) {
+        // Apply Physics
         vx[i] *= (1 - airResistance[i]);
         vy[i] *= (1 - airResistance[i]); 
         
@@ -225,13 +267,15 @@ function simulate() {
         y[i] += vy[i];
         vy[i] -= gravity[i] * 0.1;
 
+        // Reset if out of bounds
         if (x[i] > canvas.width || x[i] < 0 || y[i] > canvas.height || y[i] < 0) {
             resetBall(i, canvas);
         }
         
+        // Draw Ball
         ctx.fillStyle = ballColors[i];
         ctx.beginPath();                
-        ctx.arc(x[i], y[i], 5, 0, Math.PI * 2);
+        ctx.arc(x[i], y[i], simulator.ballSize, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
     }
@@ -251,6 +295,6 @@ function resetBall(i, canvas) {
     vy[i] = -velocity[i] * Math.sin(launchAngle[i] * Math.PI / 180);
 }
 
+// Initialize simulation on load
 updateArray();
 checkValues();
-simulate();
