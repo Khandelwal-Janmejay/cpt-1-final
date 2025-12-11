@@ -39,6 +39,11 @@ let ballSizeVal = document.getElementById("ballSizeVal");
 
 let velMin = document.getElementById("velMin");
 let velMax = document.getElementById("velMax");
+let gravMin = document.getElementById("gravMin");
+let gravMax = document.getElementById("gravMax");
+let dragMin  = document.getElementById("dragMin");
+let dragMax  = document.getElementById("dragMax");
+let ballMax = document.getElementById("maxBalls");
 
 let canvas = document.getElementById("simulationCanvas");
 
@@ -70,6 +75,11 @@ ballSizeVal.addEventListener("input", checkRange);
 
 velMin.addEventListener("input", sliderRange);
 velMax.addEventListener("input", sliderRange);
+gravMin.addEventListener("input", sliderRange);
+gravMax.addEventListener("input", sliderRange);
+dragMin.addEventListener("input", sliderRange);
+dragMax.addEventListener("input", sliderRange);
+ballMax.addEventListener("input", sliderRange);
 
 let animationID;
 let simulator = {
@@ -95,8 +105,23 @@ let color = ["red", "blue", "green", "orange", "purple", "cyan", "magenta", "yel
 function sliderRange(){
 	let velMini = parseFloat(velMin.value);
 	let velMaxi = parseFloat(velMax.value);
+	let gravMini = parseFloat(gravMin.value);
+	let gravMaxi = parseFloat(gravMax.value);
+	let dragMini = parseFloat(dragMin.value);
+	let dragMaxi = parseFloat(dragMax.value);
+	let ballMaxi = parseFloat(ballMax.value);
+	
 	if (velMini > velMaxi){
-		showError();
+		showError(2);
+	}
+	else if (velMini > velMaxi){
+		showError(2);
+	}
+	else if (dragMini > dragMaxi){
+		showError(2);
+	}
+	else if (ballMaxi < 1){
+		showError(3);
 	}
 	else{
 		updateSlider();
@@ -109,11 +134,26 @@ function sliderRange(){
 function updateSlider(){
 	let updateMinVel = velMin.value;
 	let updateMaxVel = velMax.value;
+	let updateMinGrav = gravMin.value;
+	let updateMaxGrav = gravMax.value;
+	let updateMinDrag = dragMin.value;
+	let updateMaxDrag = dragMax.value;
+	let updateBallCount = ballMax.value;
+	
 	minVelocity.min = updateMinVel;
 	minVelocity.max = updateMaxVel;
 	maxVelocity.min = updateMinVel;
 	maxVelocity.max = updateMaxVel;
-	
+	minGravity.min = updateMinGrav;
+	minGravity.max = updateMaxGrav;
+	maxGravity.min = updateMinGrav;
+	maxGravity.max = updateMaxGrav;
+	minAirResistance.min = updateMinDrag;
+	minAirResistance.max = updateMaxDrag;
+	maxAirResistance.min = updateMinDrag;
+	maxAirResistance.max = updateMaxDrag;
+	numBallS.max = updateBallCount;
+	changeValues();
 }
 
 function randomize(){
@@ -191,16 +231,16 @@ function checkValues() {
     changeValues();
 
     if (minVelo > maxVelo){
-        showError();
+        showError(1);
     }
     else if (minLaunch > maxLaunch){
-        showError();
+        showError(1);
     }
     else if (minGrav > maxGrav){
-        showError();
+        showError(1);
     }
     else if (minAir > maxAir){
-        showError();
+        showError(1);
     }
     else{
         updateParameters();
@@ -224,7 +264,7 @@ function changeValues() {
     ballSizeVal.value = ballSize.value;
 }
 
-function showError(){
+function showError(errorId){
     cancelAnimationFrame(animationID);
     let ctx = canvas.getContext("2d");
     
@@ -234,7 +274,18 @@ function showError(){
     ctx.font = '20px Arial';
     ctx.fillStyle = 'red'; 
     ctx.textAlign = 'center';
-    ctx.fillText('Invalid Range: Min cannot be greater than Max!', canvas.width/2, canvas.height/2);
+	if (errorId == 1){
+		ctx.fillText('Invalid Range: Min cannot be greater than Max!', canvas.width/2, canvas.height/2);
+	}
+	else if (errorId == 2){
+		ctx.fillText('Invalid Range: Slider Min cannot be greater than Slider Max', canvas.width/2, canvas.height/2);
+	}
+	else if (errorId == 3){
+		ctx.fillText('Invalid Entry: Number of balls cannot be less than 1', canvas.width/2, canvas.height/2);
+	}
+	else if (errorId == 4){
+		ctx.fillText('Invalid Entry: Size of balls cannot be less than 1', canvas.width/2, canvas.height/2);
+	}
 }
 
 function updateParameters() {

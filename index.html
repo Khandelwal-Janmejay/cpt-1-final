@@ -10,6 +10,7 @@
 <body>
 
     <h1 id="header">Physics Simulator</h1>
+	<a href="3dwork.html" id="button"> Go to 3D Physics Simulator</a>
 
     <div class="main-container">
         
@@ -108,7 +109,27 @@
 					<div class = "input-row">
 						<label for="velMax"> Maximum Velocity </label>
 						<input type="number" id="velMax" value="100">
-					</div>					
+					</div>
+					<div class="input-row">
+						<label for="gravMin"> Minimum Gravity </label>
+						<input type="number" id="gravMin" value="-9.8">
+					</div>
+					<div class="input-row">
+						<label for="gravMax"> Maximum Gravity </label>
+						<input type="number" id="gravMax" value="9.8">
+					</div>
+					<div class="input-row">
+						<label for="dragMin"> Minimum Drag </label>
+						<input type="number" id="dragMin" value="0">
+					</div>
+					<div class="input-row">
+						<label for="dragMax"> Maximum Drag </label>
+						<input type="number" id="dragMax" value="0.01">
+					</div>
+					<div class="input-row">
+						<label for="maxBalls">  Maximum Number of balls </label>
+						<input type="number" id="maxBalls" value="50" min="1">
+					</div>
 				</div>
                 <input type="button" id="random" value="Randomize All Parameters" onclick="randomize()"> 
             </div>
