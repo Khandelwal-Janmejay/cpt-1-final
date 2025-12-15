@@ -82,6 +82,7 @@ dragMax.addEventListener("input", sliderRange);
 ballMax.addEventListener("input", sliderRange);
 
 let animationID;
+// structure object from w3schools
 let simulator = {
     minVelocity: 50,
     maxVelocity: 100,
@@ -96,12 +97,13 @@ let simulator = {
     numBalls: 50,
     ballSize: 5
 };
-
+// colors list from w3schools
 let color = ["red", "blue", "green", "orange", "purple", "cyan", "magenta", "yellow", "lime", "pink", "teal", "lavender", "brown", "beige", "maroon", "navy", "olive", "coral", "turquoise", "silver",
     "gold", "salmon", "plum", "orchid", "ivory", "khaki", "crimson", "indigo", "violet", "azure", "emerald",
     "amber", "cerulean", "fuchsia", "jade", "saffron", "sepia", "tan", "umber", "vermilion", "wisteria",
     "zucchini", "cobalt", "denim", "ecru", "flax", "garnet", "harlequin", "isabelline", "jasmine", "lilac"];
 
+// function to check if the slider range textboxes have valid input, if yes then update slider values and restart simulation
 function sliderRange(){
 	let velMini = parseFloat(velMin.value);
 	let velMaxi = parseFloat(velMax.value);
@@ -131,6 +133,7 @@ function sliderRange(){
 	}
 }
 
+// function to change the min and max of sliders based on the text box input
 function updateSlider(){
 	let updateMinVel = velMin.value;
 	let updateMaxVel = velMax.value;
@@ -156,6 +159,7 @@ function updateSlider(){
 	changeValues();
 }
 
+// called when the randomize button is pressed, min and max range of randomize is hardcoded
 function randomize(){
     let xPosition = Math.floor(Math.random() * (canvas.width + 1));
     let yPosition = Math.floor(Math.random() * (canvas.height + 1));
@@ -202,6 +206,7 @@ function randomize(){
     simulate();
 }
 
+// update slider value based on the number input through textbox
 function checkRange(){
     xPos.value = parseFloat(xPosVal.value);
     yPos.value = parseFloat(yPosVal.value);
@@ -218,6 +223,7 @@ function checkRange(){
     checkValues();
 }
 
+// check if the slider values are in range; min < max, if not call showError with the error 'tag', if values range is valid then update simulation
 function checkValues() {
     let minVelo = parseFloat(minVelocity.value);
     let maxVelo = parseFloat(maxVelocity.value);
@@ -249,6 +255,7 @@ function checkValues() {
     }
 }
 
+// update textbox value to slider value
 function changeValues() {
     xPosVal.value = xPos.value;
     yPosVal.value = yPos.value;
@@ -264,6 +271,7 @@ function changeValues() {
     ballSizeVal.value = ballSize.value;
 }
 
+// function to show errors; errorId tells the function what error message to show
 function showError(errorId){
     cancelAnimationFrame(animationID);
     let ctx = canvas.getContext("2d");
@@ -288,6 +296,7 @@ function showError(errorId){
 	}
 }
 
+// update the simulation structure's value
 function updateParameters() {
     simulator.minVelocity = parseFloat(minVelocity.value);
     simulator.maxVelocity = parseFloat(maxVelocity.value);
@@ -302,6 +311,7 @@ function updateParameters() {
     updateArray();
 }
 
+// initialize each ball's properties; random values are chosen going from min to max, inclusive 
 function updateArray() {
     for (let i = 0; i < simulator.numBalls; i++) {
         velocity[i] = Math.random() * (simulator.maxVelocity - simulator.minVelocity) + simulator.minVelocity;
@@ -313,6 +323,8 @@ function updateArray() {
     initalSetup();
 }
 
+// set position and starting x and y velocity
+// x and y velocity is calculated based on velocity and launch angle
 function initalSetup() {
     for (let i = 0; i < simulator.numBalls; i++) {
         x[i] = simulator.xPos = parseFloat(xPos.value);
@@ -322,6 +334,7 @@ function initalSetup() {
     }
 }
 
+// t=function for animation, for loop updates each balls position based on velocity and accereration. requestAnimationFrame allows animation at browsers frame per second rate
 function simulate() {
     let ctx = canvas.getContext("2d");
     
@@ -349,6 +362,7 @@ function simulate() {
     animationID = requestAnimationFrame(simulate);
 }
 
+// called when a ball is out of the screen, the new vall is assigned new random properties
 function resetBall(i, canvas) {
     velocity[i] = Math.random() * (simulator.maxVelocity - simulator.minVelocity) + simulator.minVelocity;
     launchAngle[i] = Math.random() * (simulator.maxLaunchAngle - simulator.minLaunchAngle) + simulator.minLaunchAngle;
@@ -362,5 +376,6 @@ function resetBall(i, canvas) {
     vy[i] = -velocity[i] * Math.sin(launchAngle[i] * Math.PI / 180);
 }
 
+// called to start simulation
 updateArray();
 checkValues();
